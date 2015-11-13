@@ -1,0 +1,16 @@
+{
+	"name": "neonbug/meexo-user",
+	"description": "User package for Meexo CMS",
+	"keywords": ["meexo", "cms", "laravel", "php"],
+	"license": "MIT",
+	"type": "library",
+	"require": {
+		"neonbug/meexo": "*", 
+		"neonbug/meexo-common": "*"
+	},
+	"autoload": {
+		"psr-4": {
+			"Neonbug\\User\\": "src"
+		}
+	}
+}
