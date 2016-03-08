@@ -1,0 +1,16 @@
+{
+	"name": "neonbug/meexo-contact-form",
+	"description": "Contact form package for Meexo CMS",
+	"keywords": ["meexo", "cms", "laravel", "php"],
+	"license": "MIT",
+	"type": "library",
+	"require": {
+		"neonbug/meexo-common": "0.*", 
+		"google/recaptcha": "^1.1"
+	},
+	"autoload": {
+		"psr-4": {
+			"Neonbug\\ContactForm\\": "src"
+		}
+	}
+}
