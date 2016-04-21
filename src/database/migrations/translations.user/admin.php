@@ -1,11 +1,11 @@
 <?php $p = 'user::admin.';
 return [
-	$p . 'title.main' => [ 'en' => 'User', 'sl' => 'Uporabnik' ], 
+	$p . 'title.main' => [ 'en' => 'Users', 'sl' => 'Uporabniki' ], 
 	$p . 'title.list' => [ 'en' => 'List', 'sl' => 'Seznam' ], 
 	$p . 'title.add'  => [ 'en' => 'Add', 'sl' => 'Dodajanje' ], 
 	$p . 'title.edit' => [ 'en' => 'Edit', 'sl' => 'Urejanje' ], 
 	
-	$p . 'menu.main' => [ 'en' => 'User', 'sl' => 'Uporabnik' ], 
+	$p . 'menu.main' => [ 'en' => 'Users', 'sl' => 'Uporabniki' ], 
 	$p . 'menu.list' => [ 'en' => 'List', 'sl' => 'Seznam' ], 
 	$p . 'menu.add'  => [ 'en' => 'Add', 'sl' => 'Dodaj' ], 
 	
