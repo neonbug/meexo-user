@@ -8,7 +8,8 @@
 				
 				<div class="ui checkbox" data-name="role[{{ $id_language }}][{{ $field['name'] }}][]" 
 					style="padding-top: 8px;">
-					<input type="checkbox" name="admin_role[{{ $id_language }}][{{ $field['name'] }}]" value="true">
+					<input type="checkbox" name="admin_role[{{ $id_language }}][{{ $field['name'] }}]" value="true" 
+						{!! in_array('admin', $field['selected_roles']) ? 'checked="checked"' : '' !!} />
 					<label>{{ trans('user::admin.add_fields.role.administrator') }}</label>
 				</div>
 				
@@ -19,7 +20,10 @@
 					
 					<option value="">{{ trans('user::admin.add_fields.role.role-select-placeholder') }}</option>
 					@foreach ($field['values'] as $key=>$val)
-						<option value="{{ $key }}">{{ $val }}</option>
+						<option value="{{ $key }}" 
+							{!! in_array($key, $field['selected_roles']) ? 'selected="selected"' : '' !!}>
+							{{ $val }}
+						</option>
 					@endforeach
 					
 				</select>

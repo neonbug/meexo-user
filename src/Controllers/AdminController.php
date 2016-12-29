@@ -79,6 +79,51 @@ class AdminController extends \Neonbug\Common\Http\Controllers\BaseAdminControll
 		return $retval;
 	}
 	
+	public function adminEditPost($id)
+	{
+		$is_preview = (Request::input('preview') !== null);
+		
+		$model = $this->getModel();
+		$item = $model::findOrFail($id);
+		
+		try
+		{
+			$retval = $this->adminEditPostHandle(
+				$is_preview, 
+				$item, 
+				Request::input('field'), //first level keys are language ids, second level are field names
+				(Request::file('field') == null ? [] : Request::file('field')), //first level keys are language ids, second level are field names
+				Auth::user()->id_user, 
+				config($this->getConfigPrefix() . '.add.language_independent_fields'), 
+				config($this->getConfigPrefix() . '.add.language_dependent_fields'), 
+				$this->getRoutePrefix()
+			);
+		}
+		catch (\Illuminate\Database\QueryException $ex)
+		{
+			if (sizeof($ex->errorInfo) == 3 && 
+				mb_stripos($ex->errorInfo[2], 'duplicate key value violates unique constraint') !== false && 
+				mb_stripos($ex->errorInfo[2], 'user_username_unique') !== false)
+			{
+				return redirect(route($this->getRoutePrefix() . '::admin::add', []))
+					->withErrors([ 'general' => trans('user::admin.add.errors.duplicate-username') ]);
+			}
+			
+			throw $ex;
+		}
+		
+		$id_item = $item->{$item->getKeyName()};
+		
+		$this->processRoles(
+			\Neonbug\Common\Models\UserRole::where('id_user', $id_item)->get(), 
+			(Request::input('admin_role') == null ? [] : Request::input('admin_role')), //first level keys are language ids, second level are field names
+			(Request::input('role') == null ? [] : Request::input('role')), //first level keys are language ids, second level are field names
+			$id_item
+		);
+		
+		return $retval;
+	}
+	
 	protected function processRoles($current_roles, $admin_roles, $roles, $id_item)
 	{
 		$role_name_to_id_user_role = [];
@@ -110,9 +155,20 @@ class AdminController extends \Neonbug\Common\Http\Controllers\BaseAdminControll
 			{
 				$new_role_names[] = 'admin';
 			}
+			
+			foreach ($role_name_to_id_user_role as $id_role=>$id_user_role)
+			{
+				if ($id_role == 'admin') continue;
+				$delete_id_user_roles[] = $id_user_role;
+			}
 		}
 		else
 		{
+			foreach ($role_name_to_id_user_role as $id_role=>$id_user_role)
+			{
+				$delete_id_user_roles[] = $id_user_role;
+			}
+			
 			foreach ($roles as $id_language=>$fields)
 			{
 				foreach ($fields as $field_name=>$items)
@@ -123,11 +179,13 @@ class AdminController extends \Neonbug\Common\Http\Controllers\BaseAdminControll
 					{
 						if (array_key_exists($role, $role_name_to_id_user_role))
 						{
-							$delete_id_user_roles[] = $role_name_to_id_user_role[$role];
-							continue;
+							$idx = array_search($role_name_to_id_user_role[$role], $delete_id_user_roles);
+							unset($delete_id_user_roles[$idx]);
 						}
-						
-						$new_role_names[] = $role;
+						else
+						{
+							$new_role_names[] = $role;
+						}
 					}
 				}
 			}
