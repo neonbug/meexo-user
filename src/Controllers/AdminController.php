@@ -203,4 +203,12 @@ class AdminController extends \Neonbug\Common\Http\Controllers\BaseAdminControll
 			$item->save();
 		}
 	}
+	
+	public function adminDeletePost()
+	{
+		$id = Request::input('id');
+		\Neonbug\Common\Models\UserRole::whereIdUser($id)->delete();
+		
+		return parent::adminDeletePost();
+	}
 }
